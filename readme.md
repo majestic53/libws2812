@@ -25,6 +25,8 @@ Updated: 12/13/2014
 * Initial release
 * Basic support for WS2812 family of RGB LEDs (tested with WS2812B on an attiny85 @ 8MHz)
 
+![Wiring](https://dl.dropboxusercontent.com/u/6410544/libws2812/wiring.jpg)
+
 Usage
 =====
 
