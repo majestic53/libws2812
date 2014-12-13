@@ -30,17 +30,17 @@ Usage
 
 NOTE: You will need to install avr-gcc if you don't already have it.
 
-To use LIBWS2812, compile the core library and sample files with the accompanying makefile. The make file will produce a series of object files 
+To use LIBWS2812, compile the core library and sample files with the accompanying makefile. The makefile will produce a series of object files 
 (found in the ./build directory), and a series of hex files (found in the ./bin directory).
 
-See the [Example](https://github.com/majestic53/libws2812#example) section below for the full example.
+See the [Examples](https://github.com/majestic53/libws2812#examples) section below for the full example.
 
 Architecture
 ===========
 
 LIBWS2812 is a relatively simple library with only a handful of routines. Once the user has initialized the library, the user has the option to 
-power on/off power to the LEDs, as well as update the LEDs colors. Writing new LED colors is handled by the library, and the user can update 
-LED colors at any time, so long as the LEDs are powered on. See the state machine below, which describes the library operations in more detail.
+power on/off the LEDs, as well as update the LEDs colors. Writing new LED colors is handled by the library, and the user can update 
+LED colors at any time so long as the LEDs are powered on. See the state machine below, which describes the library operations in more detail:
 
 ![States](https://dl.dropboxusercontent.com/u/6410544/libws2812/states.png)
 

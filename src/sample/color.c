@@ -147,7 +147,7 @@ main(void)
 	for(;;) {
 		_delay_ms(5);
 
-		// uodate LED color every 5 ms
+		// update LED color every 5 ms
 		result = ws2812_update(&cont, update_led);
 		if(!WS_ERR_SUCCESS(result)) {
 			goto cleanup;
