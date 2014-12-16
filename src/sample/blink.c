@@ -22,6 +22,8 @@
 #include <util/delay.h>
 #include "../lib/ws2812.h"
 
+#define UPDATE_DELAY 500 // ms
+
 /*
  * Initialization callback routine
  * Called during initialization for all LEDs
@@ -103,9 +105,9 @@ main(void)
 	}
 
 	for(;;) {
-		_delay_ms(500);
+		_delay_ms(UPDATE_DELAY);
 
-		// update LED color every 500 ms
+		// update LED color
 		result = ws2812_update(&cont, update_led);
 		if(!WS_ERR_SUCCESS(result)) {
 			goto cleanup;

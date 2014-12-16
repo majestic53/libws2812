@@ -33,6 +33,8 @@ enum {
 
 #define SECT_MAX BLUE_RED_SECT
 
+#define UPDATE_DELAY 5 // ms
+
 /*
  * Initialization callback routine
  * Called during initialization for all LEDs
@@ -145,9 +147,9 @@ main(void)
 	}
 
 	for(;;) {
-		_delay_ms(5);
+		_delay_ms(UPDATE_DELAY);
 
-		// update LED color every 5 ms
+		// update LED color
 		result = ws2812_update(&cont, update_led);
 		if(!WS_ERR_SUCCESS(result)) {
 			goto cleanup;
