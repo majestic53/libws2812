@@ -23,15 +23,15 @@
 #include "../lib/ws2812.h"
 
 enum {
-	RED_SECT = 0,
-	RED_GREEN_SECT,
-	GREEN_SECT,
-	GREEN_BLUE_SECT,
-	BLUE_SECT,
-	BLUE_RED_SECT,
+	SECT_RED = 0,
+	SECT_RED_GREEN,
+	SECT_GREEN,
+	SECT_GREEN_BLUE,
+	SECT_BLUE,
+	SECT_BLUE_RED,
 };
 
-#define SECT_MAX BLUE_RED_SECT
+#define SECT_MAX SECT_BLUE_RED
 
 #define UPDATE_DELAY 5 // ms
 
@@ -89,37 +89,37 @@ update_led(
 	sect = (iter % (UINT8_MAX * (SECT_MAX + 1))) / UINT8_MAX;
 
 	switch(sect) { // 255, 0, 0
-		case RED_SECT:
+		case SECT_RED:
 
 			if(ele->green < UINT8_MAX) {
 				++ele->green;
 			}
 			break;
-		case RED_GREEN_SECT: // 255, 255, 0
+		case SECT_RED_GREEN: // 255, 255, 0
 
 			if(ele->red) {
 				--ele->red;
 			}
 			break;
-		case GREEN_SECT: // 0, 255, 0
+		case SECT_GREEN: // 0, 255, 0
 
 			if(ele->blue < UINT8_MAX) {
 				++ele->blue;
 			}
 			break;
-		case GREEN_BLUE_SECT: // 0, 255, 255
+		case SECT_GREEN_BLUE: // 0, 255, 255
 
 			if(ele->green) {
 				--ele->green;
 			}
 			break;
-		case BLUE_SECT: // 0, 0, 255
+		case SECT_BLUE: // 0, 0, 255
 
 			if(ele->red < UINT8_MAX) {
 				++ele->red;
 			}
 			break;
-		case BLUE_RED_SECT: // 255, 0, 255
+		case SECT_BLUE_RED: // 255, 0, 255
 
 			if(ele->blue) {
 				--ele->blue;
