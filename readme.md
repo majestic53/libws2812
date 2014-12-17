@@ -182,7 +182,7 @@ update_led(
 	__in uint16_t iter
 	)
 {
-	uint16_t mode;
+	uint16_t sect;
 	wserr_t result = WS_ERR_NONE;
 
 	if(!ele || (ele_idx >= WS_ELE_MAX_COUNT)) {
@@ -190,9 +190,9 @@ update_led(
 		goto exit;
 	}
 
-	mode = (iter % (UINT8_MAX * (SECT_MAX + 1))) / UINT8_MAX;
+	sect = (iter % (UINT8_MAX * (SECT_MAX + 1))) / UINT8_MAX;
 
-	switch(mode) { // 255, 0, 0
+	switch(sect) { // 255, 0, 0
 		case RED_SECT:
 
 			if(ele->green < UINT8_MAX) {
