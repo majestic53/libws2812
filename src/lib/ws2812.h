@@ -27,17 +27,16 @@
 extern "C" {
 #endif // __cplusplus
 
-#ifndef __in
 #define __in
-#endif // __in
-
-#ifndef __in_opt
 #define __in_opt
-#endif // __in_opt
-
-#ifndef __inout
 #define __inout
-#endif // __inout
+
+/*
+ * Port/Pin definition macros
+ */
+#define DEF_DDR(_BNK_) DDR ## _BNK_
+#define DEF_PORT(_BNK_) PORT ## _BNK_
+#define DEF_PIN(_BNK_, _PIN_) P ## _BNK_ ## _PIN_
 
 /*
  * Error codes
@@ -107,6 +106,10 @@ typedef struct __attribute__ ((packed)) _wscol_t {
  */
 typedef struct __attribute__ ((packed)) _ws2812 {
 	uint8_t status;
+	volatile uint8_t *ddr;
+	volatile uint8_t *port;
+	uint8_t pin_power;
+	uint8_t pin_data;
 	uint16_t count;
 	uint16_t iter;
 	wscol_t ele[WS_ELE_MAX_COUNT];
@@ -139,17 +142,42 @@ typedef wserr_t(*wsupdate_cb)(
 	);
 
 /*
+ * Initialization macro
+ * Called prior to any other library calls
+ * @param _CONT_ context structure
+ * @papram _BNK_ user specified DDR/PORT/PIN bank
+ * @param _PIN_PWR_ user specified power pin
+ * @param _PIN_DATA_ user specified data pin
+ * @param _COUNT_ LED count
+ * @param _INIT_ optional initialization callback
+ * @param _PWR_ initial power settings
+ * @param _UPDATE_ optional update callback
+ * @return WS_ERR_NONE on success
+ */
+#define ws2812_init(_CONT_, _BNK_, _PIN_PWR_, _PIN_DATA_, _COUNT_, _INIT_, _POWER_, _UPDATE_)\
+	_ws2812_init(_CONT_, &DEF_DDR(_BNK_), &DEF_PORT(_BNK_), DEF_PIN(_BNK_, _PIN_PWR_),\
+		DEF_PIN(_BNK_, _PIN_DATA_), _COUNT_, _INIT_, _POWER_, _UPDATE_)
+
+/*
  * Initialization routine
- * Called prior to any other libary calls
+ * Called prior to any other library calls
  * @param cont context structure
+ * @papram ddr user specified DDR
+ * @param port user specified PORT
+ * @param pin_power user specified power pin
+ * @param pin_data user specified data pin
  * @param count LED count
  * @param init optional initialization callback
  * @param power initial power settings
  * @param update optional update callback
  * @return WS_ERR_NONE on success
  */
-wserr_t ws2812_init(
+wserr_t _ws2812_init(
 	__inout ws2812 *cont,
+	__in volatile uint8_t *ddr,
+	__in volatile uint8_t *port,
+	__in uint8_t pin_power,
+	__in uint8_t pin_data,
 	__in uint16_t count,
 	__in_opt wsinit_cb init,
 	__in bool power,
@@ -179,7 +207,7 @@ wserr_t ws2812_on(
 	
 /*
  * Uninitialization routine
- * Called after all other libary calls
+ * Called after all other library calls
  * @param cont context structure
  * @return WS_ERR_NONE on success
  */

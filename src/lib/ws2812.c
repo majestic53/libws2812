@@ -23,17 +23,6 @@
 #include <util/delay.h>
 #include "ws2812.h"
 
-#define WS_DDR DDRB
-#define WS_PIN_DATA PB1
-#define WS_PIN_PWR PB0
-#define WS_PORT PORTB
-#define WS_PORT_ADDR _SFR_IO_ADDR(WS_PORT)
-
-#define WS_PIN_DATA_MASK _BV(WS_PIN_DATA)
-#define WS_PIN_DATA_MASK_HIGH (WS_PORT | WS_PIN_DATA_MASK)
-#define WS_PIN_DATA_MASK_LOW (WS_PORT & ~WS_PIN_DATA_MASK)
-#define WS_PIN_PWR_MASK _BV(WS_PIN_PWR)
-#define WS_DDR_MASK (WS_PIN_DATA_MASK | WS_PIN_PWR_MASK)
 #define WS_MSB_MASK 0x80
 
 #define WS_DELAY_PWR_CHG 100.0 // us
@@ -50,7 +39,8 @@ _ws2812_write(
 {
 	uint16_t len;
 	wserr_t result = WS_ERR_NONE;
-	uint8_t bit, *data = NULL, data_ele, old_sreg;
+	uint8_t volatile *out_port = NULL;
+	uint8_t bit, *data = NULL, data_ele, mask_high, mask_low, old_sreg;
 
 	if(!cont || !WS_BIT_CHK(cont->status, WS_STATUS_INIT)
 			|| !WS_BIT_CHK(cont->status, WS_STATUS_PWR)) {
@@ -65,7 +55,10 @@ _ws2812_write(
 		goto exit;
 	}
 
+	mask_high = *cont->port | _BV(cont->pin_data);
+	mask_low = *cont->port & ~_BV(cont->pin_data);
 	old_sreg = SREG;
+	out_port = cont->port;
 	cli();
 
 	while(len--) {
@@ -75,23 +68,23 @@ _ws2812_write(
 		bit = WS_CHAN_DEPTH;
 		
 		while(bit--) {
-			WS_PORT = WS_PIN_DATA_MASK_HIGH;
+			*out_port = mask_high;
 
 			// TODO: perform proper waits
 
 			if(!(data_ele & WS_MSB_MASK)) {
-				WS_PORT = WS_PIN_DATA_MASK_LOW;
+				*out_port = mask_low;
 
 				// TODO: perform proper waits
 			}
 
 			data_ele <<= 1;
-			WS_PORT = WS_PIN_DATA_MASK_LOW;
+			*out_port = mask_low;
 		}
 	}
 
 	// write reset
-	WS_BIT_CLR(WS_PORT, WS_PIN_DATA_MASK);
+	WS_BIT_CLR(*cont->port, _BV(cont->pin_data));
 	_delay_us(WS_DELAY_RESET);
 
 	sei();
@@ -102,8 +95,12 @@ exit:
 }
 
 wserr_t 
-ws2812_init(
+_ws2812_init(
 	__inout ws2812 *cont,
+	__in volatile uint8_t *ddr,
+	__in volatile uint8_t *port,
+	__in uint8_t pin_power,
+	__in uint8_t pin_data,
 	__in uint16_t count,
 	__in_opt wsinit_cb init,
 	__in bool power,
@@ -129,8 +126,12 @@ ws2812_init(
 		memset(cont, 0, sizeof(ws2812));
 	}
 
-	WS_DDR = WS_DDR_MASK;
-	WS_PORT = 0;
+	cont->ddr = ddr;
+	cont->port = port;
+	cont->pin_power = pin_power;
+	cont->pin_data = pin_data;
+	*cont->ddr = (_BV(cont->pin_power) | _BV(cont->pin_data));
+	*cont->port = 0;
 	cont->status = WS_STATUS_INIT;
 	cont->count = count;
 
@@ -181,7 +182,7 @@ ws2812_off(
 		goto exit;
 	}
 	
-	WS_BIT_CLR(WS_PORT, WS_PIN_PWR_MASK);
+	WS_BIT_CLR(*cont->port, _BV(cont->pin_power));
 	WS_BIT_CLR(cont->status, WS_STATUS_PWR);
 	_delay_us(WS_DELAY_PWR_CHG);
 	
@@ -208,7 +209,7 @@ ws2812_on(
 		goto exit;
 	}
 
-	WS_BIT_SET(WS_PORT, WS_PIN_PWR_MASK);
+	WS_BIT_SET(*cont->port, _BV(cont->pin_power));
 	WS_BIT_SET(cont->status, WS_STATUS_PWR);
 	_delay_us(WS_DELAY_PWR_CHG);
 
@@ -243,8 +244,8 @@ ws2812_uninit(
 		}
 	}
 	
-	WS_PORT = 0;
-	WS_DDR = 0;
+	*cont->ddr = 0;
+	*cont->port = 0;
 	memset(cont, 0, sizeof(ws2812));
 
 exit:

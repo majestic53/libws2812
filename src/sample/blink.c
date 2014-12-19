@@ -22,6 +22,10 @@
 #include <util/delay.h>
 #include "../lib/ws2812.h"
 
+#define PIN_DATA 1 // PB1
+#define PIN_POWER 0 // PB0
+#define PORT_BANK B // PORTB
+
 #define UPDATE_DELAY 500 // ms
 
 /*
@@ -99,7 +103,7 @@ main(void)
 	CLKPR = 0;
 
 	// initialize libary (one LED, power on)
-	result = ws2812_init(&cont, 1, init_led, true, update_led);
+	result = ws2812_init(&cont, PORT_BANK, PIN_POWER, PIN_DATA, 1, init_led, true, update_led);
 	if(!WS_ERR_SUCCESS(result)) {
 		goto exit;
 	}
