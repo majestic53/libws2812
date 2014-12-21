@@ -29,7 +29,7 @@ LIB=./src/lib/
 SAMPLE=./src/sample/
 
 # Change these to match your device
-# NOTE: frequencies less than 8MHz might now work!
+# NOTE: frequencies less than 8MHz might not work!
 F_CPU=8000000
 DEV=attiny85
 DEV_SRT=t85
