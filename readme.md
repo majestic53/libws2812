@@ -20,12 +20,12 @@ Changelog
 =========
 
 ###Version 0.1.1451r1
-Updated: 12/20/2014
+*Updated: 12/20/2014*
 
 * Added port/pin agnostic initialization macro (you can now define your own power/data pins!!!)
 
 ###Version 0.1.1450r1
-Updated: 12/13/2014
+*Updated: 12/13/2014*
 
 * Initial release
 * Basic support for WS2812 family of RGB LEDs (tested with WS2812B on an attiny85 @ 8MHz)
@@ -35,7 +35,7 @@ Updated: 12/13/2014
 Usage
 =====
 
-NOTE: You will need to install avr-gcc if you don't already have it.
+**NOTE:** You will need to install avr-gcc if you don't already have it.
 
 To use LIBWS2812, simply include the header file ```ws2812.h```, found under ```./src/lib```, in your project.
 
@@ -47,14 +47,14 @@ See the [Examples](https://github.com/majestic53/libws2812#examples) section bel
 Architecture
 ===========
 
-LIBWS2812 is a relatively simple library with only a handful of routines. Once the user has initialized the library, the user has the option to 
-power on/off the LEDs, as well as update the LEDs colors. Writing new LED colors is handled by the library, and the user can update 
+LIBWS2812 is a relatively simple library with only a handful of routines. Once the library has been initialized, you have the option to 
+power on/off the LEDs, as well as update the LEDs colors. Writing new LED colors is handled by the library, and you can update 
 LED colors at any time so long as the LEDs are powered on. See the state machine below, which describes the library operations in more detail:
 
 ![States](https://dl.dropboxusercontent.com/u/6410544/libws2812/states.png)
 
-The user is also responsible for implemented a series of routines which handle LED initialization and updating. These routines will then be called 
-by the library during operation.
+**NOTE:** You are responsible for implementing the callback routines which handle LED initialization and updating. If callback routines are not
+supplied during initialization, the LEDs will be initialized to a default color.
 
 ###Initialization
 
@@ -67,7 +67,8 @@ wserr_t initialize_led(
 	);
 ```
 
-NOTE: The user is responsible for reporting any errors through the return error code.
+**NOTE:** The user is responsible for reporting any errors through the return error code. Typically, this routine should return 
+with ```WS_ERR_NONE```.
 
 ###Update
 
@@ -82,7 +83,8 @@ wserr_t update_led(
 	);
 ```
 
-NOTE: The user is responsible for reporting any errors through the return error code.
+**NOTE:** The user is responsible for reporting any errors through the return error code. Typically, this routine should return 
+with ```WS_ERR_NONE```.
 
 Examples
 =======
