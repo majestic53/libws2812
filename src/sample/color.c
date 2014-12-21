@@ -59,6 +59,7 @@ init_led(
 		goto exit;
 	}
 
+	// initialize red
 	ele->red = UINT8_MAX;
 	ele->green = 0;
 	ele->blue = 0;
@@ -129,6 +130,9 @@ update_led(
 				--ele->blue;
 			}
 			break;
+		default:
+			result = WS_ERR_INV_STATE;
+			goto exit;
 	}
 
 exit:

@@ -48,9 +48,10 @@ init_led(
 		goto exit;
 	}
 
-	ele->red = UINT8_MAX;
+	// initialize blue
+	ele->red = 0;
 	ele->green = 0;
-	ele->blue = 0;
+	ele->blue = UINT8_MAX;
 
 exit:
 	return result;
@@ -78,15 +79,15 @@ update_led(
 		goto exit;
 	}
 
-	if(ele->red == UINT8_MAX) {
-		ele->red = 0;
-		ele->green = UINT8_MAX;
-	} else if(ele->green == UINT8_MAX) {
-		ele->green = 0;
-		ele->blue = UINT8_MAX;
-	} else {
+	if(ele->blue == UINT8_MAX) { // red
 		ele->blue = 0;
 		ele->red = UINT8_MAX;
+	} else if(ele->red == UINT8_MAX) { // green
+		ele->red = 0;
+		ele->green = UINT8_MAX;
+	} else { // blue
+		ele->green = 0;
+		ele->blue = UINT8_MAX;
 	}
 
 exit:

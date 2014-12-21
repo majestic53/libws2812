@@ -19,6 +19,11 @@ Table of Contents
 Changelog
 =========
 
+###Version 0.1.1451r1
+Updated: 12/20/2014
+
+* Added port/pin agnostic initialization macro (you can now define your own power/data pins!!!)
+
 ###Version 0.1.1450r1
 Updated: 12/13/2014
 
@@ -85,6 +90,13 @@ Examples
 Blink is a simple example which cylces through the primary colors (red, green, blue).
 
 ```c
+/*
+ * Initialization callback routine
+ * Called during initialization for all LEDs
+ * @param ele current LED
+ * @param ele_idx current LED index
+ * @return WS_ERR_NONE on success
+ */
 wserr_t 
 init_led(
 	__inout wscol_t *ele,
@@ -98,14 +110,23 @@ init_led(
 		goto exit;
 	}
 
-	ele->red = UINT8_MAX;
+	// initialize blue
+	ele->red = 0;
 	ele->green = 0;
-	ele->blue = 0;
+	ele->blue = UINT8_MAX;
 
 exit:
 	return result;
 }
 
+/*
+ * Update callback routine
+ * Called during update for all LEDs
+ * @param ele current LED
+ * @param ele_idx current LED index
+ * @param iter current update iteration
+ * @return WS_ERR_NONE on success
+ */
 wserr_t 
 update_led(
 	__inout wscol_t *ele,
@@ -120,15 +141,15 @@ update_led(
 		goto exit;
 	}
 
-	if(ele->red == UINT8_MAX) {
-		ele->red = 0;
-		ele->green = UINT8_MAX;
-	} else if(ele->green == UINT8_MAX) {
-		ele->green = 0;
-		ele->blue = UINT8_MAX;
-	} else {
+	if(ele->blue == UINT8_MAX) { // red
 		ele->blue = 0;
 		ele->red = UINT8_MAX;
+	} else if(ele->red == UINT8_MAX) { // green
+		ele->red = 0;
+		ele->green = UINT8_MAX;
+	} else { // blue
+		ele->green = 0;
+		ele->blue = UINT8_MAX;
 	}
 
 exit:
@@ -136,11 +157,11 @@ exit:
 }
 ```
 
-This example can be build with a call to the makefile ```make blink```.
+This example can be build with a call to the makefile ```make blink``` (might require ```sudo``` to write to your programmer).
 
 ###Color
 
-Color is an example which cylces through all supported colors (all 16581375 of them).
+Color is an example which cylces through all supported colors (all 16,581,375 of them).
 
 ```c
 enum {
@@ -154,6 +175,13 @@ enum {
 
 #define SECT_MAX SECT_BLUE_RED
 
+/*
+ * Initialization callback routine
+ * Called during initialization for all LEDs
+ * @param ele current LED
+ * @param ele_idx current LED index
+ * @return WS_ERR_NONE on success
+ */
 wserr_t 
 init_led(
 	__inout wscol_t *ele,
@@ -167,6 +195,7 @@ init_led(
 		goto exit;
 	}
 
+	// initialize red
 	ele->red = UINT8_MAX;
 	ele->green = 0;
 	ele->blue = 0;
@@ -175,6 +204,14 @@ exit:
 	return result;
 }
 
+/*
+ * Update callback routine
+ * Called during update for all LEDs
+ * @param ele current LED
+ * @param ele_idx current LED index
+ * @param iter current update iteration
+ * @return WS_ERR_NONE on success
+ */
 wserr_t 
 update_led(
 	__inout wscol_t *ele,
@@ -229,6 +266,9 @@ update_led(
 				--ele->blue;
 			}
 			break;
+		default:
+			result = WS_ERR_INV_STATE;
+			goto exit;
 	}
 
 exit:
@@ -236,7 +276,7 @@ exit:
 }
 ```
 
-This example can be build with a call to the makefile ```make color```.
+This example can be build with a call to the makefile ```make color``` (might require ```sudo``` to write to your programmer).
 
 License
 ======

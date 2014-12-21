@@ -28,6 +28,8 @@ BUILD=./build/
 LIB=./src/lib/
 SAMPLE=./src/sample/
 
+# Change these to match your device
+# NOTE: frequencies less than 8MHz might now work!
 F_CPU=8000000
 DEV=attiny85
 DEV_SRT=t85
@@ -36,7 +38,8 @@ CC_FLG=-Wall -Os -DF_CPU=$(F_CPU) -mmcu=$(DEV)
 
 all: blink
 
-blink: clean blink_build
+# Blink command will attempt to build and flash blink sample
+blink: clean blink_build flash_blink
 
 blink_build:
 	@echo ""
@@ -51,7 +54,8 @@ blink_build:
 	avr-objcopy -j .text -j .data -O ihex $(BUILD)$(EX0).elf $(BIN)$(EX0).hex
 	avr-size --format=avr --mcu=$(DEV) $(BUILD)$(EX0).elf
 
-color: clean color_build
+# Color command will attempt to build and flash color sample
+color: clean color_build flash_color
 
 color_build:
 	@echo ""
