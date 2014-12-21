@@ -37,8 +37,10 @@ Usage
 
 NOTE: You will need to install avr-gcc if you don't already have it.
 
-To use LIBWS2812, compile the core library and sample files with the accompanying makefile. The makefile will produce a series of object files 
-(found in the ./build directory), and a series of hex files (found in the ./bin directory).
+To use LIBWS2812, simply include the header file ```ws2812.h```, found under ```./src/lib```, in your project.
+
+To use the sample projects, compile the core library using the accompanying makefile. The makefile will produce a series of 
+object files (found in the ./build directory), and a series of hex files (found in the ./bin directory).
 
 See the [Examples](https://github.com/majestic53/libws2812#examples) section below for the full example.
 
