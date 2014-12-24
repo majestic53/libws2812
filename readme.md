@@ -19,6 +19,11 @@ Table of Contents
 Changelog
 =========
 
+###Version 0.1.1452r1
+*Updated: 12/23/2014*
+
+* Modified to support atmega chips running at 16MHz
+
 ###Version 0.1.1451r1
 *Updated: 12/20/2014*
 
