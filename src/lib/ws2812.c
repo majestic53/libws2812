@@ -66,16 +66,21 @@ _ws2812_write(
 		// write each byte to LED chain
 		data_ele = *data++;
 		bit = WS_CHAN_DEPTH;
-		
+
 		while(bit--) {
 			*out_port = mask_high;
 
 			// TODO: perform proper waits
+			asm volatile("nop");
+			asm volatile("nop");
+			// ---
 
 			if(!(data_ele & WS_MSB_MASK)) {
 				*out_port = mask_low;
 
 				// TODO: perform proper waits
+				asm volatile("nop");
+				// ---
 			}
 
 			data_ele <<= 1;

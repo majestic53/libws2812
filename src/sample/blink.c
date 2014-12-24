@@ -24,7 +24,7 @@
 
 #define PIN_DATA 1 // PB1
 #define PIN_POWER 0 // PB0
-#define PORT_BANK B // PORTB
+#define PORT_BANK D // PORTD
 
 #define UPDATE_DELAY 500 // ms
 

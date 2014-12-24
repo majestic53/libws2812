@@ -30,9 +30,9 @@ SAMPLE=./src/sample/
 
 # Change these to match your device
 # NOTE: frequencies less than 8MHz might not work!
-F_CPU=8000000
-DEV=attiny85
-DEV_SRT=t85
+F_CPU=16000000#8000000
+DEV=atmega32u4#attiny85
+DEV_SRT=m32u4#t85
 
 CC_FLG=-Wall -Os -DF_CPU=$(F_CPU) -mmcu=$(DEV)
 
